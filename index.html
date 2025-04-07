@@ -1,179 +1,152 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gold Rate Calculator</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #fff8f0;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 600px;
-            margin: auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        h1, h2 {
-            color: #b68d4c;
-            text-align: center;
-        }
-        .input-group {
-            margin-bottom: 15px;
-        }
-        .input-group label {
-            display: block;
-            font-weight: bold;
-        }
-        .input-group input, .input-group select {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            background: #b68d4c;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-        }
-        button:hover {
-            background: #9e773f;
-        }
-        .result {
-            margin-top: 20px;
-            font-size: 1.2em;
-            text-align: center;
-            font-weight: bold;
-        }
-        .social-icons {
-            margin-top: 20px;
-            text-align: center;
-        }
-        .social-icons img {
-            width: 40px;
-            margin: 0 10px;
-        }
-        .live-rate {
-            margin-top: 20px;
-            font-size: 1.1em;
-            text-align: center;
-        }
-        .alert {
-            color: red;
-            font-size: 0.9em;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gold Rate Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #fff8f0;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #b8860b;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 15px;
+      border-radius: 8px;
+      border: 1px solid #b8860b;
+      background-color: #ffd700;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      text-align: center;
+      font-weight: bold;
+    }
+    .social-icons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+    .social-icons a img {
+      width: 32px;
+      height: 32px;
+    }
+    .alert {
+      color: red;
+      margin-top: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <img src="logo.jpg" alt="Logo" style="width:100px;display:block;margin:auto">
-        <h1>Gold Rate Calculator</h1><div class="input-group">
-        <label for="mode">Calculation Mode</label>
-        <select id="mode" onchange="resetInputs()">
-            <option value="weight">Calculate Gold Weight (Enter Total Price & Making Charge/gram)</option>
-            <option value="making">Calculate Making Charge/Gram (Enter Total Price & Gold Weight)</option>
-        </select>
-    </div>
+  <div class="container">
+    <h2>Gold Rate Calculator</h2>
 
-    <div class="input-group">
-        <label for="price">Total Price (incl. GST)</label>
-        <input type="number" id="price" min="0" step="0.01">
-    </div>
+    <label for="mode">Select Calculation Mode</label>
+    <select id="mode">
+      <option value="weight">Gold Weight (Enter Charge/Gram)</option>
+      <option value="charge">Making Charge Per Gram (Enter Weight)</option>
+    </select>
 
-    <div class="input-group">
-        <label id="dynamic-label" for="value">Making Charge per Gram</label>
-        <input type="number" id="value" min="0" step="0.001">
-    </div>
-
-    <div class="input-group">
-        <label for="gst">GST Rate (%)</label>
-        <input type="number" id="gst" value="3" min="0" step="0.01">
-    </div>
+    <label id="inputLabel" for="inputValue">Enter Making Charge Per Gram (₹)</label>
+    <input type="number" id="inputValue" placeholder="Enter value" step="0.001" min="0" />
 
     <button onclick="calculate()">Calculate</button>
 
-    <div class="alert" id="alert"></div>
-    <div class="result" id="result"></div>
+    <div class="alert" id="alertBox"></div>
 
-    <div class="live-rate">
-        Live 22KT Gold Rate (Tanishq): <strong>₹8325 / gram</strong>
-    </div>
+    <div class="result" id="resultBox"></div>
+
+    <div class="result">22kt Gold Rate (1gm): ₹8325</div>
 
     <div class="social-icons">
-        <a href="https://instagram.com/krishna_jewellery_workshop_kdp" target="_blank">
-            <img src="instagram-new.png" alt="Instagram">
-        </a>
-        <img src="facebook-new.png" alt="Facebook">
-        <img src="google-logo.png" alt="Google">
+      <a href="https://www.instagram.com/krishna_jewellery_workshop_kdp" target="_blank">
+        <img src="instagram-new.png" alt="Instagram" />
+      </a>
+      <a href="https://www.facebook.com/raytarun362" target="_blank">
+        <img src="facebook-new.png" alt="Facebook" />
+      </a>
+      <a href="#">
+        <img src="google-logo.png" alt="Google" />
+      </a>
     </div>
-</div>
+  </div>
 
-<script>
-    function resetInputs() {
-        document.getElementById('price').value = '';
-        document.getElementById('value').value = '';
-        document.getElementById('gst').value = 3;
-        document.getElementById('result').innerText = '';
-        document.getElementById('alert').innerText = '';
+  <script>
+    const goldRate = 8325; // From Tanishq
 
-        let mode = document.getElementById('mode').value;
-        document.getElementById('dynamic-label').innerText = mode === 'weight'
-            ? 'Making Charge per Gram'
-            : 'Gold Weight (g)';
-    }
+    document.getElementById('mode').addEventListener('change', () => {
+      const mode = document.getElementById('mode').value;
+      const inputLabel = document.getElementById('inputLabel');
+      const inputField = document.getElementById('inputValue');
+
+      if (mode === 'weight') {
+        inputLabel.innerText = "Enter Making Charge Per Gram (₹)";
+        inputField.placeholder = "Enter charge per gram";
+      } else {
+        inputLabel.innerText = "Enter Gold Weight (gm)";
+        inputField.placeholder = "Enter gold weight";
+      }
+
+      // Reset
+      document.getElementById('resultBox').innerText = '';
+      document.getElementById('alertBox').innerText = '';
+      inputField.value = '';
+    });
 
     function calculate() {
-        const mode = document.getElementById('mode').value;
-        const totalPrice = parseFloat(document.getElementById('price').value);
-        const value = parseFloat(document.getElementById('value').value);
-        const gstRate = parseFloat(document.getElementById('gst').value);
-        const goldRatePerGram = 8325; // Fixed as per Tanishq
+      const mode = document.getElementById('mode').value;
+      const value = parseFloat(document.getElementById('inputValue').value);
+      const alertBox = document.getElementById('alertBox');
+      const resultBox = document.getElementById('resultBox');
 
-        const alertBox = document.getElementById('alert');
-        const resultBox = document.getElementById('result');
-        alertBox.innerText = '';
-        resultBox.innerText = '';
+      alertBox.innerText = '';
+      resultBox.innerText = '';
 
-        if (isNaN(totalPrice) || totalPrice <= 0 || isNaN(value) || value <= 0 || isNaN(gstRate) || gstRate < 0) {
-            alertBox.innerText = 'Please enter valid positive values for all fields.';
-            return;
-        }
+      if (isNaN(value) || value <= 0) {
+        alertBox.innerText = 'Please enter a valid positive number';
+        return;
+      }
 
-        const priceBeforeGST = totalPrice / (1 + gstRate / 100);
-
-        if (mode === 'weight') {
-            const totalRatePerGram = goldRatePerGram + value;
-            const weight = priceBeforeGST / totalRatePerGram;
-            resultBox.innerText = `Gold Weight: ${weight.toFixed(3)} grams`;
-        } else if (mode === 'making') {
-            if (value <= 0) {
-                alertBox.innerText = 'Gold weight must be positive.';
-                return;
-            }
-            const goldValue = goldRatePerGram * value;
-            const makingCharge = (priceBeforeGST - goldValue) / value;
-            if (makingCharge < 0) {
-                alertBox.innerText = 'Making charge cannot be negative. Please check inputs.';
-                return;
-            }
-            resultBox.innerText = `Making Charge per Gram: ₹${makingCharge.toFixed(2)}`;
-        } else {
-            alertBox.innerText = 'Invalid mode selected.';
-        }
+      if (mode === 'weight') {
+        const weight = (value / goldRate).toFixed(3);
+        resultBox.innerText = `Gold Weight = ${weight} gm`;
+      } else {
+        const charge = (value * goldRate).toFixed(0);
+        resultBox.innerText = `Making Charge = ₹${charge}`;
+      }
     }
-
-    window.onload = resetInputs;
-</script>
-
+  </script>
 </body>
 </html>
