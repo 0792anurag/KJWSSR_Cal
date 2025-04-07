@@ -1,121 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Gold Calculator - Krishna Jewellery</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Krishna Jewellers Calculator</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #fff8e1;
-      padding: 20px;
       text-align: center;
+      background-color: #fef8e7;
+      padding: 30px;
     }
     h1 {
       color: #b8860b;
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+    img {
+      width: 120px;
+      margin-bottom: 10px;
     }
     .container {
       background: white;
       padding: 30px;
-      margin: auto;
       max-width: 500px;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      margin: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin: 10px 0 5px;
     }
     input, select {
-      margin: 10px 0;
+      width: 100%;
       padding: 10px;
-      width: 90%;
-      font-size: 16px;
+      font-size: 1em;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      margin-bottom: 15px;
     }
     button {
+      padding: 12px 25px;
+      font-size: 1.1em;
       background-color: #b8860b;
       color: white;
       border: none;
-      padding: 10px 25px;
-      font-size: 18px;
-      margin-top: 20px;
+      border-radius: 6px;
       cursor: pointer;
-      border-radius: 5px;
     }
     button:hover {
       background-color: #8b6914;
     }
-    .result {
+    #result {
       margin-top: 20px;
-      font-weight: bold;
-      font-size: 20px;
+      font-size: 1.3em;
       color: green;
     }
   </style>
 </head>
 <body>
-  <!-- Logo -->
-<img src="logo.jpg" alt="Krishna Jewellery Logo" style="width: 100px; height: auto; margin-bottom: 10px;">
 
-<!-- Shop Name -->
-<h1>Krishna Jewellery Work Shop - Gold Calculator</h1>
+  <img src="logo.jpg" alt="Krishna Jewellers Logo" />
+  <h1>Krishna Jewellers Calculator</h1>
 
-  <h1>Krishna Jewellery Work Shop Showroom</h1>
   <div class="container">
-    <label for="mode">I want to calculate:</label><br>
-    <select id="mode" onchange="toggleFields()">
+    <label>I want to calculate:</label>
+    <select id="calcType">
       <option value="weight">Gold Weight</option>
-      <option value="making">Making Charge per Gram</option>
-    </select><br>
+      <option value="makingCharge">Making Charge per Gram</option>
+    </select>
 
-    <div>
-      <input type="number" id="totalPaid" placeholder="Total Price Paid (₹)">
-      <input type="number" id="goldRate" placeholder="Gold Rate per 10g (₹)">
-      <input type="number" id="gst" placeholder="GST %">
-    </div>
+    <label>Total Price Paid (₹)</label>
+    <input type="number" id="totalPrice" placeholder="e.g. 60200">
 
-    <div id="makingSection">
-      <input type="number" id="makingCharge" placeholder="Making Charge per Gram (₹)">
-    </div>
+    <label>Gold Rate per 10g (₹)</label>
+    <input type="number" id="goldRate" placeholder="e.g. 73000">
 
-    <div id="weightSection">
-      <input type="number" id="goldWeight" placeholder="Gold Weight (g)">
-    </div>
+    <label>GST %</label>
+    <input type="number" id="gst" placeholder="e.g. 3">
+
+    <label id="lastInputLabel">Making Charge per Gram (₹)</label>
+    <input type="number" id="lastInput" placeholder="e.g. 800">
 
     <button onclick="calculate()">Calculate</button>
 
-    <div class="result" id="result"></div>
+    <div id="result"></div>
   </div>
 
   <script>
-    function toggleFields() {
-      const mode = document.getElementById("mode").value;
-      document.getElementById("makingSection").style.display = mode === "weight" ? "block" : "none";
-      document.getElementById("weightSection").style.display = mode === "making" ? "block" : "none";
+    const calcType = document.getElementById("calcType");
+    const lastInputLabel = document.getElementById("lastInputLabel");
+    const lastInput = document.getElementById("lastInput");
+
+    calcType.addEventListener("change", () => {
+      if (calcType.value === "weight") {
+        lastInputLabel.innerText = "Making Charge per Gram (₹)";
+        lastInput.placeholder = "e.g. 800";
+      } else {
+        lastInputLabel.innerText = "Gold Weight (g)";
+        lastInput.placeholder = "e.g. 7.25";
+      }
       document.getElementById("result").innerText = "";
-    }
+    });
 
     function calculate() {
-      const mode = document.getElementById("mode").value;
-      const totalPaid = parseFloat(document.getElementById("totalPaid").value);
+      const type = calcType.value;
+      const totalPaid = parseFloat(document.getElementById("totalPrice").value);
       const goldRate10g = parseFloat(document.getElementById("goldRate").value);
       const gstPercent = parseFloat(document.getElementById("gst").value);
-
+      const input = parseFloat(document.getElementById("lastInput").value);
+      
+      const priceWithoutGST = totalPaid / (1 + gstPercent / 100);
       const goldRatePerGram = goldRate10g / 10;
 
-      if (mode === "weight") {
-        const makingCharge = parseFloat(document.getElementById("makingCharge").value);
-        const pricePerGramWithGST = (goldRatePerGram + makingCharge) * (1 + gstPercent / 100);
-        const weight = totalPaid / pricePerGramWithGST;
-        document.getElementById("result").innerText = `Gold Weight ≈ ${weight.toFixed(2)} g`;
+      if (type === "weight") {
+        const goldPricePerGramWithMC = goldRatePerGram + input;
+        const weight = priceWithoutGST / goldPricePerGramWithMC;
+        document.getElementById("result").innerText = `Gold Weight: ${weight.toFixed(2)} g`;
       } else {
-        const goldWeight = parseFloat(document.getElementById("goldWeight").value);
-        const priceWithoutGST = totalPaid / (1 + gstPercent / 100);
-        const goldTotal = goldWeight * goldRatePerGram;
-        const makingTotal = priceWithoutGST - goldTotal;
-        const makingPerGram = makingTotal / goldWeight;
-        document.getElementById("result").innerText = `Making Charge per Gram ≈ ₹${makingPerGram.toFixed(2)}`;
+        const goldPrice = input * goldRatePerGram;
+        const makingChargeTotal = priceWithoutGST - goldPrice;
+        const makingChargePerGram = makingChargeTotal / input;
+        document.getElementById("result").innerText = `Making Charge per Gram: ₹${makingChargePerGram.toFixed(2)}`;
       }
     }
-
-    // Initialize correct fields on load
-    toggleFields();
   </script>
+
 </body>
 </html>
