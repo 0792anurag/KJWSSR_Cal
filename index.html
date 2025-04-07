@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Krishna Jewellery Calculator</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
   <style>
@@ -14,14 +14,17 @@
       text-align: center;
       color: #222;
     }
-    img {
+
+    img.logo {
       width: 250px;
       margin-top: 20px;
       border-radius: 12px;
     }
+
     h1 {
       color: #b58900;
     }
+
     .container {
       background: #fff3e0;
       margin: 30px auto;
@@ -31,17 +34,20 @@
       max-width: 500px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
+
     label, select, input {
       display: block;
       width: 100%;
       margin: 12px 0;
       font-size: 16px;
     }
+
     input, select {
       padding: 10px;
       border-radius: 8px;
       border: 1px solid #ccc;
     }
+
     button {
       padding: 12px;
       background: #b58900;
@@ -52,37 +58,59 @@
       cursor: pointer;
       margin-top: 10px;
     }
+
     .result {
       font-size: 18px;
       font-weight: bold;
       margin-top: 20px;
       color: #333;
     }
-    .social {
-      margin-top: 10px;
-      font-size: 14px;
+
+    .social-icons {
+      margin-top: 20px;
     }
-    .social a {
-      color: #0645AD;
-      text-decoration: none;
-      margin: 0 5px;
+
+    .social-icons a {
+      margin: 0 10px;
+      display: inline-block;
     }
+
+    .social-icons img {
+      width: 32px;
+      height: 32px;
+      vertical-align: middle;
+    }
+
     .source {
       font-size: 12px;
       margin-top: 10px;
     }
+
+    #liveRate {
+      margin-top: 10px;
+      font-weight: 600;
+    }
   </style>
 </head>
+
 <body>
-  <img src="logo.jpg" alt="Krishna Jewellery Workshop" />
+  <img src="logo.jpg" alt="Krishna Jewellery Workshop" class="logo"/>
   <h1>Krishna Jewellery Workshop</h1>
-  <div class="social">
-    Facebook: <a href="https://www.facebook.com/raytarun362" target="_blank">raytarun362</a><br>
-    Instagram: <a href="https://www.instagram.com/Krishna_Jewellery_Work_Shop_kdp" target="_blank">Krishna_Jewellery_Work_Shop_kdp</a>
+
+  <div class="social-icons">
+    <a href="https://www.facebook.com/raytarun362" target="_blank">
+      <img src="facebook-new.png" alt="Facebook"/>
+    </a>
+    <a href="https://www.instagram.com/Krishna_Jewellery_Work_Shop_kdp" target="_blank">
+      <img src="instagram-new.png" alt="Instagram"/>
+    </a>
+    <a href="https://g.co/kgs/HRLo7DF" target="_blank">
+      <img src="google-logo.png" alt="Google Maps"/>
+    </a>
   </div>
 
   <div class="container">
-    <form>
+    <form id="calcForm">
       <label for="mode">Select Calculation Mode:</label>
       <select id="mode">
         <option value="perGram">Find Making Charge per Gram</option>
@@ -98,62 +126,61 @@
       <label>GST Rate (%)</label>
       <input type="number" id="gstRate" placeholder="e.g. 3" required />
 
-      <label>Gold Weight (g)</label>
+      <label>Gold Weight or Making Charge Per Gram</label>
       <input type="number" id="goldWeight" placeholder="e.g. 7.25" />
 
       <button type="submit">Calculate</button>
     </form>
-    <div class="result" id="result"></div>
 
-    <div class="result" id="liveRates"></div>
+    <div class="result" id="result"></div>
+    <div class="result" id="liveRate">Loading live rate...</div>
     <div class="source">Source: <a href="https://www.tanishq.co.in/store/1015" target="_blank">Tanishq Cuttack</a></div>
   </div>
 
   <script>
-    async function fetchGoldRates() {
+    const goldRateField = document.getElementById("goldRate");
+
+    async function fetchGoldRate() {
+      const url = "https://www.goldapi.io/api/XAU/INR";
+      const headers = {
+        "x-access-token": "goldapi-ji60sm97ls88n-io",
+        "Content-Type": "application/json"
+      };
+
       try {
-        const response = await fetch("https://api.scraperapi.com?api_key=YOUR_SCRAPERAPI_KEY&url=https://www.tanishq.co.in/store/1015");
-        const html = await response.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, "text/html");
-        const gold22 = doc.querySelector(".some-22k-selector").textContent;
-        const gold24 = doc.querySelector(".some-24k-selector").textContent;
-        document.getElementById("liveRates").textContent = `22K: ₹${gold22} | 24K: ₹${gold24}`;
+        const response = await fetch(url, { headers });
+        const data = await response.json();
+        const perGram = data.price / 31.1035;
+        document.getElementById("liveRate").textContent = `Live Rate: ₹${perGram.toFixed(2)} per gram (24K)`;
+        goldRateField.value = (perGram * 10).toFixed(2); // Autofill 10g gold rate
       } catch (err) {
-        document.getElementById("liveRates").textContent = "22K: Error | 24K: Error";
+        console.error("API error:", err);
+        document.getElementById("liveRate").textContent = "Live Rate: Unavailable";
       }
     }
 
     function validateInputs(mode, totalPrice, goldRate, gstRate, goldWeight) {
       let errors = [];
       if (!mode) errors.push("Select a mode.");
-      if (!totalPrice || isNaN(totalPrice) || totalPrice <= 0)
-        errors.push("Enter valid total price.");
-      if (!goldRate || isNaN(goldRate) || goldRate <= 0)
-        errors.push("Enter valid gold rate.");
-      if (!gstRate || isNaN(gstRate) || gstRate < 0 || gstRate > 100)
-        errors.push("Enter GST between 0-100.");
-      if (mode === "perGram") {
-        if (!goldWeight || isNaN(goldWeight) || goldWeight <= 0)
-          errors.push("Enter valid weight.");
-      }
+      if (!totalPrice || totalPrice <= 0) errors.push("Enter valid total price.");
+      if (!goldRate || goldRate <= 0) errors.push("Enter valid gold rate.");
+      if (!gstRate || gstRate < 0 || gstRate > 100) errors.push("Enter GST between 0-100.");
+      if (!goldWeight || goldWeight <= 0) errors.push("Provide Gold Weight or Making Charge per Gram.");
       return errors;
     }
 
     function calculate(mode, totalPrice, goldRate, gstRate, goldWeight) {
       const ratePerGram = goldRate / 10;
-      const gstMultiplier = 1 + (gstRate / 100);
-      const netPrice = totalPrice / gstMultiplier;
-
+      const netPrice = totalPrice / (1 + gstRate / 100);
       let result = "";
 
       if (mode === "perGram") {
         const goldCost = ratePerGram * goldWeight;
-        const makingChargeTotal = netPrice - goldCost;
-        const makingChargePerGram = makingChargeTotal / goldWeight;
-        result = `Making Charge per Gram: ₹${makingChargePerGram.toFixed(2)}`;
-      } else if (mode === "weight") {
-        const perGramTotal = ratePerGram + 1; // Replace 1 with est. making charge if needed
+        const makingTotal = netPrice - goldCost;
+        const makingPerGram = makingTotal / goldWeight;
+        result = `Making Charge per Gram: ₹${makingPerGram.toFixed(2)}`;
+      } else {
+        const perGramTotal = ratePerGram + goldWeight; // here goldWeight = user-input making charge per gram
         const netWeight = netPrice / perGramTotal;
         result = `Estimated Weight: ${netWeight.toFixed(2)} g`;
       }
@@ -161,9 +188,18 @@
       document.getElementById("result").textContent = result;
     }
 
-    document.querySelector("form").addEventListener("submit", function (e) {
-      e.preventDefault();
+    // Reset inputs when mode changes
+    document.getElementById("mode").addEventListener("change", () => {
+      document.getElementById("totalPrice").value = "";
+      document.getElementById("goldRate").value = "";
+      document.getElementById("gstRate").value = "";
+      document.getElementById("goldWeight").value = "";
+      document.getElementById("result").textContent = "";
+    });
 
+    // Handle form submission
+    document.getElementById("calcForm").addEventListener("submit", function (e) {
+      e.preventDefault();
       const mode = document.getElementById("mode").value;
       const totalPrice = parseFloat(document.getElementById("totalPrice").value);
       const goldRate = parseFloat(document.getElementById("goldRate").value);
@@ -179,7 +215,7 @@
       calculate(mode, totalPrice, goldRate, gstRate, goldWeight);
     });
 
-    fetchGoldRates();
+    fetchGoldRate(); // auto fetch on load
   </script>
 </body>
 </html>
