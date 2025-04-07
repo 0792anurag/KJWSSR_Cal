@@ -1,47 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Krishna Jewellery Workshop</title>
-  <link rel="stylesheet" href="style.css">
-  <script defer src="script.js"></script>
-</head>
-<body>
-  <div class="container">
-    <img src="banner.jpg" alt="Krishna Jewellery Workshop" class="banner">
-    <h1>Krishna Jewellery Workshop</h1>
-
-    <div class="social-icons">
-      <a href="https://www.facebook.com/raytarun362" target="_blank">
-        <img src="facebook.png" alt="Facebook">
-      </a>
-      <a href="https://www.instagram.com/krishna_jewellery_workshop_kdp" target="_blank">
-        <img src="instagram.png" alt="Instagram">
-      </a>
-      <a href="https://g.co/kgs/rBhUXJS" target="_blank">
-        <img src="google.png" alt="Google">
-      </a>
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Krishna Jewellery Workshop</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="script.js"></script>
+</head><body>
+    <div class="container">
+        <img src="logo.jpg" alt="Krishna Jewellery Workshop" class="logo">
+        <h1>Krishna Jewellery Workshop</h1><div class="social-icons">
+        <a href="https://www.facebook.com/raytarun362" target="_blank">
+            <img src="facebook-new.png" alt="Facebook">
+        </a>
+        <a href="https://www.instagram.com/krishna_jewellery_workshop_kdp" target="_blank">
+            <img src="instagram-new.png" alt="Instagram">
+        </a>
+        <a href="https://www.google.com/search?q=Krishna+Jewellery+KDP" target="_blank">
+            <img src="google-logo.png" alt="Google">
+        </a>
     </div>
 
     <label for="mode">Select Calculation Mode:</label>
     <select id="mode">
-      <option value="making">Find Making Charge per Gram</option>
-      <option value="weight">Find Weight of Gold</option>
+        <option value="weight">Find Weight of Gold</option>
+        <option value="making">Find Making Charge per Gram</option>
     </select>
 
-    <input type="number" id="price" placeholder="e.g. 60000">
-    <input type="number" id="final" placeholder="e.g. 70000">
-    <input type="number" id="karat" placeholder="e.g. 22">
+    <div id="input-group">
+        <input type="number" id="totalAmount" placeholder="Total Price (e.g. 60000)">
+        <input type="number" id="goldRate" placeholder="Gold Rate (e.g. 70000)">
+        <input type="number" id="karat" placeholder="Purity in Karat (e.g. 22)">
+    </div>
 
     <button onclick="calculate()">Calculate</button>
 
     <div id="result"></div>
 
-    <div class="rates">
-      <p><strong>22K:</strong> ₹66,550 | <strong>24K:</strong> ₹72,620</p>
-      <p>Source: <a href="https://www.tanishq.co.in/gold-rate" target="_blank">Tanishq Gold Rate</a></p>
+    <div class="gold-rates">
+        <strong>22K:</strong> ₹66,550 &nbsp; | &nbsp; <strong>24K:</strong> ₹72,620
     </div>
-  </div>
-</body>
-</html>
+
+    <p class="source">Source: <a href="https://www.tanishq.co.in/gold-rate" target="_blank">Tanishq Gold Rate</a></p>
+</div>
+
+</body></html>
