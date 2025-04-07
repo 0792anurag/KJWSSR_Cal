@@ -1,90 +1,47 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Krishna Jewellery Calculator</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Krishna Jewellery Workshop</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="script.js"></script>
 </head>
 <body>
   <div class="container">
-    <img src="header.jpg" alt="Krishna Jewellery Workshop" class="header-image" />
-    <h1>Krishna Jewellery Workshop</h1><div class="social-buttons">
-  <a href="https://www.facebook.com/raytarun362" target="_blank">
-    <img src="facebook-icon.png" alt="Facebook" class="social-icon">
-  </a>
-  <a href="https://www.instagram.com/krishna_jewellery_workshop_kdp" target="_blank">
-    <img src="instagram-icon.png" alt="Instagram" class="social-icon">
-  </a>
-  <a href="https://g.co/kgs/rBhUXJS" target="_blank">
-    <img src="google-icon.png" alt="Google" class="social-icon">
-  </a>
-</div>
+    <img src="banner.jpg" alt="Krishna Jewellery Workshop" class="banner">
+    <h1>Krishna Jewellery Workshop</h1>
 
-<label for="mode">Select Calculation Mode:</label>
-<select id="mode">
-  <option value="weight">Find Weight of Gold</option>
-  <option value="making">Find Making Charge per Gram</option>
-</select>
+    <div class="social-icons">
+      <a href="https://www.facebook.com/raytarun362" target="_blank">
+        <img src="facebook.png" alt="Facebook">
+      </a>
+      <a href="https://www.instagram.com/krishna_jewellery_workshop_kdp" target="_blank">
+        <img src="instagram.png" alt="Instagram">
+      </a>
+      <a href="https://g.co/kgs/rBhUXJS" target="_blank">
+        <img src="google.png" alt="Google">
+      </a>
+    </div>
 
-<input type="number" id="input1" placeholder="e.g. 60200" />
-<input type="number" id="input2" placeholder="e.g. 73000" />
-<input type="number" id="input3" placeholder="e.g. 3" />
-<input type="number" id="input4" placeholder="e.g. 7.25" />
+    <label for="mode">Select Calculation Mode:</label>
+    <select id="mode">
+      <option value="making">Find Making Charge per Gram</option>
+      <option value="weight">Find Weight of Gold</option>
+    </select>
 
-<button onclick="calculate()">Calculate</button>
+    <input type="number" id="price" placeholder="e.g. 60000">
+    <input type="number" id="final" placeholder="e.g. 70000">
+    <input type="number" id="karat" placeholder="e.g. 22">
 
-<p id="result"></p>
-<p id="live-price">
-  <strong>22K:</strong> ₹66,550 | <strong>24K:</strong> ₹72,620
-</p>
-<p class="source">Source: <a href="https://www.tanishq.co.in/gold-rate" target="_blank">Tanishq Gold Rate</a></p>
+    <button onclick="calculate()">Calculate</button>
 
-  </div>  <script>
-    const mode = document.getElementById("mode");
-    const input1 = document.getElementById("input1");
-    const input2 = document.getElementById("input2");
-    const input3 = document.getElementById("input3");
-    const input4 = document.getElementById("input4");
-    const result = document.getElementById("result");
+    <div id="result"></div>
 
-    mode.addEventListener("change", () => {
-      input1.value = "";
-      input2.value = "";
-      input3.value = "";
-      input4.value = "";
-      if (mode.value === "weight") {
-        input1.placeholder = "Total Price Paid (₹ incl. GST)";
-        input4.placeholder = "e.g. 7.25";
-      } else {
-        input1.placeholder = "Gold Weight (g)";
-        input4.placeholder = "e.g. 7.25";
-      }
-    });
-
-    function calculate() {
-      const a = parseFloat(input1.value);
-      const b = parseFloat(input2.value);
-      const c = parseFloat(input3.value);
-      const d = parseFloat(input4.value);
-
-      if (mode.value === "weight") {
-        if (a && b && c) {
-          const priceWithoutGST = a / (1 + c / 100);
-          const weight = priceWithoutGST / (b / 10);
-          result.innerText = `Estimated Gold Weight: ${weight.toFixed(2)}g`;
-        } else {
-          result.innerText = "Please fill all inputs correctly.";
-        }
-      } else {
-        if (a && b && c && d) {
-          const priceWithoutGST = b / (1 + c / 100);
-          const goldCost = (a * d);
-          const makingCharge = (priceWithoutGST - goldCost) / d;
-          result.innerText = `Making Charge per Gram: ₹${makingCharge.toFixed(2)}`;
-        } else {
-          result.innerText = "Please fill all inputs correctly.";
-        }
-      }
-    }
-  </script></body>
+    <div class="rates">
+      <p><strong>22K:</strong> ₹66,550 | <strong>24K:</strong> ₹72,620</p>
+      <p>Source: <a href="https://www.tanishq.co.in/gold-rate" target="_blank">Tanishq Gold Rate</a></p>
+    </div>
+  </div>
+</body>
 </html>
