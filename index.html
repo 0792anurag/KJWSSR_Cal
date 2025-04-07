@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gold Calculator - Krishna Jewellery</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff8e1;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      color: #b8860b;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      margin: auto;
+      max-width: 500px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    }
+    input, select {
+      margin: 10px 0;
+      padding: 10px;
+      width: 90%;
+      font-size: 16px;
+    }
+    button {
+      background-color: #b8860b;
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      font-size: 18px;
+      margin-top: 20px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: #8b6914;
+    }
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 20px;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <h1>Krishna Jewellery Calculator</h1>
+  <div class="container">
+    <label for="mode">I want to calculate:</label><br>
+    <select id="mode" onchange="toggleFields()">
+      <option value="weight">Gold Weight</option>
+      <option value="making">Making Charge per Gram</option>
+    </select><br>
+
+    <div>
+      <input type="number" id="totalPaid" placeholder="Total Price Paid (₹)">
+      <input type="number" id="goldRate" placeholder="Gold Rate per 10g (₹)">
+      <input type="number" id="gst" placeholder="GST %">
+    </div>
+
+    <div id="makingSection">
+      <input type="number" id="makingCharge" placeholder="Making Charge per Gram (₹)">
+    </div>
+
+    <div id="weightSection">
+      <input type="number" id="goldWeight" placeholder="Gold Weight (g)">
+    </div>
+
+    <button onclick="calculate()">Calculate</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function toggleFields() {
+      const mode = document.getElementById("mode").value;
+      document.getElementById("makingSection").style.display = mode === "weight" ? "block" : "none";
+      document.getElementById("weightSection").style.display = mode === "making" ? "block" : "none";
+      document.getElementById("result").innerText = "";
+    }
+
+    function calculate() {
+      const mode = document.getElementById("mode").value;
+      const totalPaid = parseFloat(document.getElementById("totalPaid").value);
+      const goldRate10g = parseFloat(document.getElementById("goldRate").value);
+      const gstPercent = parseFloat(document.getElementById("gst").value);
+
+      const goldRatePerGram = goldRate10g / 10;
+
+      if (mode === "weight") {
+        const makingCharge = parseFloat(document.getElementById("makingCharge").value);
+        const pricePerGramWithGST = (goldRatePerGram + makingCharge) * (1 + gstPercent / 100);
+        const weight = totalPaid / pricePerGramWithGST;
+        document.getElementById("result").innerText = `Gold Weight ≈ ${weight.toFixed(2)} g`;
+      } else {
+        const goldWeight = parseFloat(document.getElementById("goldWeight").value);
+        const priceWithoutGST = totalPaid / (1 + gstPercent / 100);
+        const goldTotal = goldWeight * goldRatePerGram;
+        const makingTotal = priceWithoutGST - goldTotal;
+        const makingPerGram = makingTotal / goldWeight;
+        document.getElementById("result").innerText = `Making Charge per Gram ≈ ₹${makingPerGram.toFixed(2)}`;
+      }
+    }
+
+    // Initialize correct fields on load
+    toggleFields();
+  </script>
+</body>
+</html>
