@@ -1,131 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Krishna Jewellery Calculator</title>
+  <meta charset="UTF-8">
+  <title>Krishna Jewellery Gold Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #fff7dd;
-      margin: 0;
-      padding: 0;
+      background: #fff8f0;
+      padding: 20px;
       text-align: center;
-    }
-    .container {
-      max-width: 500px;
-      margin: 40px auto;
-      padding: 30px;
-      background-color: white;
-      border-radius: 15px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
     }
     h1 {
       color: #b8860b;
-      font-size: 28px;
+      margin-bottom: 10px;
     }
-    img.logo {
-      width: 200px;
-      margin-top: 20px;
+    .container {
+      background: white;
+      padding: 25px;
+      margin: auto;
+      max-width: 500px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.15);
     }
-    select, input {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      box-sizing: border-box;
-      font-size: 16px;
-    }
-    button {
-      background-color: #b8860b;
-      color: white;
-      border: none;
-      padding: 12px 25px;
-      font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    .result {
+    label {
+      display: block;
       margin-top: 15px;
       font-weight: bold;
+      text-align: left;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    .result {
+      margin-top: 20px;
       font-size: 18px;
-    }
-    .footer {
-      margin-top: 30px;
-      font-size: 14px;
-    }
-    .footer a {
-      color: #b8860b;
-      text-decoration: none;
       font-weight: bold;
+      color: green;
+    }
+    #logo {
+      width: 100px;
+      margin-bottom: 10px;
+    }
+    a.fb-link {
+      display: inline-block;
+      margin-top: 15px;
+      font-size: 14px;
+      color: #3b5998;
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
 
   <!-- Logo -->
-  <img src="logo.jpg" alt="Krishna Jewellery Logo" class="logo">
+  <img src="logo.jpg" alt="Logo" id="logo" />
 
-  <!-- Shop Name -->
-  <h1>Krishna Jewellery Work Shop - Gold Calculator</h1>
+  <h1>Krishna Jewellery Workshop</h1>
 
-  <!-- Main Calculator UI -->
   <div class="container">
-    <label>I want to calculate:</label>
-    <select id="calculationType">
-      <option value="weight">Gold Weight</option>
-      <option value="making">Making Charge per Gram</option>
+    <label for="mode">Choose Mode:</label>
+    <select id="mode" onchange="calculate()">
+      <option value="calculateWeight">Calculate Gold Weight</option>
+      <option value="calculateMakingCharge">Calculate Making Charge per Gram</option>
     </select>
 
-    <input type="number" id="totalPrice" placeholder="Total Price Paid (₹)" />
-    <input type="number" id="goldRate" placeholder="Gold Rate per 10g (₹)" />
-    <input type="number" id="gstPercent" placeholder="GST %" />
-    <input type="number" id="makingCharge" placeholder="Making Charge per Gram (₹)" />
+    <label>Total Price Paid (₹ incl. GST)</label>
+    <input id="totalPaid" type="number" placeholder="e.g. 73000" oninput="calculate()">
 
-    <button onclick="calculate()">Calculate</button>
+    <label>Gold Rate per 10g (₹)</label>
+    <input id="goldRate10g" type="number" placeholder="e.g. 60200" oninput="calculate()">
 
-    <div class="result" id="result"></div>
-  </div>
+    <label>GST (%)</label>
+    <input id="gst" type="number" placeholder="e.g. 3" oninput="calculate()">
 
-  <!-- Footer -->
-  <div class="footer">
-    Follow us on Facebook: 
-    <a href="https://www.facebook.com/raytarun362/" target="_blank">
-      fb.com/KrishnaJewelleryWorkshop
+    <div id="weightInput">
+      <label>Making Charge per gram (₹)</label>
+      <input id="makingCharge" type="number" placeholder="e.g. 800" oninput="calculate()">
+    </div>
+
+    <div id="mcInput" style="display:none">
+      <label>Gold Weight (g)</label>
+      <input id="goldWeight" type="number" placeholder="e.g. 7.25" oninput="calculate()">
+    </div>
+
+    <div class="result" id="result">Result will appear here</div>
+
+    <a class="fb-link" href="https://facebook.com/YOUR_PAGE_LINK" target="_blank">
+      Visit Our Facebook Page
     </a>
   </div>
 
   <script>
     function calculate() {
-      const type = document.getElementById("calculationType").value;
-      const totalPrice = parseFloat(document.getElementById("totalPrice").value);
-      const goldRatePer10g = parseFloat(document.getElementById("goldRate").value);
-      const gstPercent = parseFloat(document.getElementById("gstPercent").value);
-      const makingChargePerGram = parseFloat(document.getElementById("makingCharge").value);
-      const resultEl = document.getElementById("result");
+      const mode = document.getElementById("mode").value;
+      const totalPaid = parseFloat(document.getElementById("totalPaid").value);
+      const goldRate10g = parseFloat(document.getElementById("goldRate10g").value);
+      const gst = parseFloat(document.getElementById("gst").value);
+      const goldRatePerGram = goldRate10g / 10;
 
-      if (isNaN(totalPrice) || isNaN(goldRatePer10g) || isNaN(gstPercent)) {
-        resultEl.innerText = "Please fill all required fields.";
-        return;
-      }
+      if (mode === "calculateWeight") {
+        document.getElementById("weightInput").style.display = "block";
+        document.getElementById("mcInput").style.display = "none";
+        const makingCharge = parseFloat(document.getElementById("makingCharge").value);
 
-      const goldRatePerGram = goldRatePer10g / 10;
-      const gstMultiplier = 1 + gstPercent / 100;
-
-      if (type === "weight") {
-        if (isNaN(makingChargePerGram)) {
-          resultEl.innerText = "Please enter making charge.";
-          return;
+        if (!isNaN(totalPaid) && !isNaN(goldRatePerGram) && !isNaN(gst) && !isNaN(makingCharge)) {
+          const pricePerGram = goldRatePerGram + makingCharge;
+          const totalPricePerGramWithGST = pricePerGram * (1 + gst / 100);
+          const weight = totalPaid / totalPricePerGramWithGST;
+          document.getElementById("result").innerText = `Gold Weight ≈ ${weight.toFixed(2)} grams`;
+        } else {
+          document.getElementById("result").innerText = "";
         }
-        const pricePerGramWithGST = (goldRatePerGram + makingChargePerGram) * gstMultiplier;
-        const goldWeight = totalPrice / pricePerGramWithGST;
-        resultEl.innerText = `Gold Weight: ${goldWeight.toFixed(2)} grams`;
-      } else if (type === "making") {
-        const denominator = gstMultiplier * (1);
-        const totalWithoutGST = totalPrice / gstMultiplier;
-        const makingCharge = (totalWithoutGST / (goldRatePerGram + makingChargePerGram)) - goldRatePerGram;
-        resultEl.innerText = `Making Charge per Gram: ₹${makingCharge.toFixed(2)}`;
+      } else {
+        document.getElementById("weightInput").style.display = "none";
+        document.getElementById("mcInput").style.display = "block";
+        const goldWeight = parseFloat(document.getElementById("goldWeight").value);
+
+        if (!isNaN(totalPaid) && !isNaN(goldRatePerGram) && !isNaN(gst) && !isNaN(goldWeight)) {
+          const priceWithoutGST = totalPaid / (1 + gst / 100);
+          const goldPrice = goldWeight * goldRatePerGram;
+          const makingChargeTotal = priceWithoutGST - goldPrice;
+          const makingChargePerGram = makingChargeTotal / goldWeight;
+          document.getElementById("result").innerText = `Making Charge per Gram ≈ ₹${makingChargePerGram.toFixed(2)}`;
+        } else {
+          document.getElementById("result").innerText = "";
+        }
       }
     }
   </script>
+
 </body>
 </html>
