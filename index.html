@@ -1,152 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gold Rate Calculator</title>
+  <meta charset="UTF-8">
+  <title>Gold Calculator - Krishna Jewellery</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 20px;
       background-color: #fff8f0;
+      color: #333;
+      text-align: center;
+      padding: 20px;
     }
+
+    h1 {
+      color: #b8860b;
+    }
+
     .container {
       max-width: 500px;
       margin: auto;
+      background-color: #fff;
       padding: 20px;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
     }
-    h2 {
-      text-align: center;
-      color: #b8860b;
+
+    .mode-toggle {
+      margin-bottom: 20px;
     }
-    label {
-      font-weight: bold;
-      display: block;
-      margin-top: 15px;
-    }
-    input {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-    select, button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 15px;
-      border-radius: 8px;
-      border: 1px solid #b8860b;
-      background-color: #ffd700;
-      color: #000;
+
+    .mode-toggle button {
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      border-radius: 10px;
+      background-color: #b8860b;
+      color: white;
       font-weight: bold;
       cursor: pointer;
     }
+
+    .mode-toggle button.active {
+      background-color: #8b5e00;
+    }
+
+    input {
+      padding: 10px;
+      width: 80%;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+
+    button.calculate {
+      margin-top: 15px;
+      background-color: #b8860b;
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
     .result {
       margin-top: 20px;
       font-size: 18px;
-      text-align: center;
       font-weight: bold;
     }
-    .social-icons {
-      margin-top: 20px;
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-    }
-    .social-icons a img {
-      width: 32px;
-      height: 32px;
-    }
-    .alert {
+
+    .error {
       color: red;
       margin-top: 10px;
-      font-weight: bold;
-      text-align: center;
+    }
+
+    .footer {
+      margin-top: 30px;
+      font-size: 14px;
+    }
+
+    .social-icons img {
+      height: 30px;
+      margin: 10px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
+
   <div class="container">
-    <h2>Gold Rate Calculator</h2>
+    <img src="logo.jpg" alt="Krishna Jewellery" style="width: 150px; margin-bottom: 10px;">
 
-    <label for="mode">Select Calculation Mode</label>
-    <select id="mode">
-      <option value="weight">Gold Weight (Enter Charge/Gram)</option>
-      <option value="charge">Making Charge Per Gram (Enter Weight)</option>
-    </select>
+    <h1>Gold Calculator</h1>
 
-    <label id="inputLabel" for="inputValue">Enter Making Charge Per Gram (₹)</label>
-    <input type="number" id="inputValue" placeholder="Enter value" step="0.001" min="0" />
+    <div class="mode-toggle">
+      <button id="weightMode" class="active" onclick="switchMode('weight')">Gold Weight → Making Charge</button>
+      <button id="chargeMode" onclick="switchMode('charge')">Making Charge → Gold Weight</button>
+    </div>
 
-    <button onclick="calculate()">Calculate</button>
+    <label id="inputLabel" for="userInput">Enter Gold Weight (in grams):</label><br>
+    <input type="number" id="userInput" placeholder="e.g., 7.25"><br>
 
-    <div class="alert" id="alertBox"></div>
+    <button class="calculate" onclick="calculate()">Calculate</button>
 
-    <div class="result" id="resultBox"></div>
+    <div class="result" id="result"></div>
+    <div class="error" id="error"></div>
 
-    <div class="result">22kt Gold Rate (1gm): ₹8325</div>
-
-    <div class="social-icons">
-      <a href="https://www.instagram.com/krishna_jewellery_workshop_kdp" target="_blank">
-        <img src="instagram-new.png" alt="Instagram" />
-      </a>
-      <a href="https://www.facebook.com/raytarun362" target="_blank">
-        <img src="facebook-new.png" alt="Facebook" />
-      </a>
-      <a href="#">
-        <img src="google-logo.png" alt="Google" />
-      </a>
+    <div class="footer">
+      <p>Today's 22kt Gold Rate (1gm): <strong>₹8325</strong></p>
+      <div class="social-icons">
+        <a href="https://www.instagram.com/krishna_jewellery_workshop_kdp" target="_blank"><img src="instagram-new.png" alt="Instagram"></a>
+        <a href="https://facebook.com/raytarun362" target="_blank"><img src="facebook-new.png" alt="Facebook"></a>
+        <a href="https://www.google.com/search?q=Krishna+Jewellery+KDP" target="_blank"><img src="google-logo.png" alt="Google"></a>
+      </div>
     </div>
   </div>
 
   <script>
-    const goldRate = 8325; // From Tanishq
+    let mode = 'weight'; // default
 
-    document.getElementById('mode').addEventListener('change', () => {
-      const mode = document.getElementById('mode').value;
-      const inputLabel = document.getElementById('inputLabel');
-      const inputField = document.getElementById('inputValue');
+    const input = document.getElementById('userInput');
+    const result = document.getElementById('result');
+    const error = document.getElementById('error');
+    const inputLabel = document.getElementById('inputLabel');
 
-      if (mode === 'weight') {
-        inputLabel.innerText = "Enter Making Charge Per Gram (₹)";
-        inputField.placeholder = "Enter charge per gram";
-      } else {
-        inputLabel.innerText = "Enter Gold Weight (gm)";
-        inputField.placeholder = "Enter gold weight";
-      }
+    const goldRatePerGram = 8325;
+    const gstPercent = 3;
 
-      // Reset
-      document.getElementById('resultBox').innerText = '';
-      document.getElementById('alertBox').innerText = '';
-      inputField.value = '';
-    });
+    function switchMode(selectedMode) {
+      mode = selectedMode;
+      document.getElementById('weightMode').classList.remove('active');
+      document.getElementById('chargeMode').classList.remove('active');
+      document.getElementById(`${selectedMode}Mode`).classList.add('active');
+      inputLabel.textContent = selectedMode === 'weight' 
+        ? "Enter Gold Weight (in grams):" 
+        : "Enter Making Charge Per Gram (₹):";
+      input.value = '';
+      result.textContent = '';
+      error.textContent = '';
+    }
 
     function calculate() {
-      const mode = document.getElementById('mode').value;
-      const value = parseFloat(document.getElementById('inputValue').value);
-      const alertBox = document.getElementById('alertBox');
-      const resultBox = document.getElementById('resultBox');
-
-      alertBox.innerText = '';
-      resultBox.innerText = '';
+      const value = parseFloat(input.value);
+      result.textContent = '';
+      error.textContent = '';
 
       if (isNaN(value) || value <= 0) {
-        alertBox.innerText = 'Please enter a valid positive number';
+        error.textContent = "Please enter a valid positive number.";
         return;
       }
 
       if (mode === 'weight') {
-        const weight = (value / goldRate).toFixed(3);
-        resultBox.innerText = `Gold Weight = ${weight} gm`;
-      } else {
-        const charge = (value * goldRate).toFixed(0);
-        resultBox.innerText = `Making Charge = ₹${charge}`;
+        const goldPrice = value * goldRatePerGram;
+        const gst = (goldPrice * gstPercent) / 100;
+        const total = goldPrice + gst;
+        result.textContent = `Making Charge (Incl. GST) for ${value.toFixed(3)}g: ₹${total.toFixed(2)}`;
+      } else if (mode === 'charge') {
+        const priceBeforeGst = value / (1 + gstPercent / 100);
+        const goldWeight = priceBeforeGst / goldRatePerGram;
+        if (goldWeight < 0) {
+          error.textContent = "Calculation error. Please recheck the input.";
+          return;
+        }
+        result.textContent = `Gold Weight for ₹${value.toFixed(2)}: ${goldWeight.toFixed(3)}g`;
       }
     }
   </script>
+
 </body>
 </html>
