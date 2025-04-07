@@ -1,22 +1,30 @@
 function calculate() {
-  const mode = document.getElementById('mode').value;
-  const price = parseFloat(document.getElementById('price').value);
-  const final = parseFloat(document.getElementById('final').value);
-  const karat = parseFloat(document.getElementById('karat').value);
-  const resultBox = document.getElementById('result');
+  const mode = document.getElementById("mode").value;
+  const price = parseFloat(document.getElementById("price").value);
+  const rate = parseFloat(document.getElementById("rate").value);
+  const karat = parseFloat(document.getElementById("karat").value);
+  const resultDiv = document.getElementById("result");
 
-  if (isNaN(price) || isNaN(final) || isNaN(karat)) {
-    resultBox.innerHTML = "Please enter valid numbers.";
+  if (!price || !rate || !karat) {
+    resultDiv.innerHTML = "Please fill all fields!";
+    resultDiv.style.color = "red";
     return;
   }
 
-  if (mode === 'making') {
-    const diff = final - price;
-    const makingPerGram = (diff / karat).toFixed(2);
-    resultBox.innerHTML = `Making Charge per Gram: ₹${makingPerGram}`;
-  } else if (mode === 'weight') {
-    const diff = final - price;
-    const weight = (diff / karat).toFixed(2);
-    resultBox.innerHTML = `Gold Weight: ${weight} g`;
+  const purity = karat / 24;
+
+  if (mode === "weight") {
+    const pureGoldRate = rate * purity;
+    const weight = price / pureGoldRate;
+    resultDiv.innerHTML = `Gold Weight: ${weight.toFixed(2)} grams`;
+  } else if (mode === "making") {
+    const pureGoldRate = rate * purity;
+    const weight = price / pureGoldRate;
+    const makingPerGram = (price - (pureGoldRate * weight)) / weight;
+    resultDiv.innerHTML = `Making Charge: ₹${makingPerGram.toFixed(2)} per gram`;
+  } else {
+    resultDiv.innerHTML = "Invalid mode selected.";
   }
+
+  resultDiv.style.color = "green";
 }
