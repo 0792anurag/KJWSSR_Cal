@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -92,32 +93,27 @@
       <select id="mode" required>
         <option value="perGram">I know Gold Weight, calculate Making Charge per Gram</option>
         <option value="weight">I know Making Charge per Gram, calculate Gold Weight</option>
-      </select><label for="totalPrice">Total Price Paid (₹ incl. GST)</label>
-  <input type="number" id="totalPrice" placeholder="e.g. 60200" step="0.01" required />
-
-  <label for="goldRate">Gold Rate (₹ per 10g)</label>
-  <input type="number" id="goldRate" placeholder="e.g. 73000" step="0.01" required />
-
-  <label for="gstRate">GST Rate (%)</label>
-  <input type="number" id="gstRate" placeholder="e.g. 3" step="0.01" required />
-
-  <label id="dynamicLabel" for="dynamicInput">Gold Weight (g)</label>
-  <input type="number" id="dynamicInput" placeholder="e.g. 7.250" step="0.001" required />
-
-  <button type="submit">Calculate</button>
-</form>
-<div class="result" id="result"></div>
-<div class="result" id="liveRates"></div>
-<div class="source">Live 22kt Rate (1g): <span id="live22kt"></span> | Source: <a href="https://www.tanishq.co.in/gold-rate.html?lang=en_IN" target="_blank">Tanishq</a></div>
-
-  </div>  <script>
+      </select>
+      <label for="totalPrice">Total Price Paid (₹ incl. GST)</label>
+      <input type="number" id="totalPrice" placeholder="e.g. 60200" step="0.01" required />
+      <label for="goldRate">Gold Rate (₹ per 10g)</label>
+      <input type="number" id="goldRate" placeholder="e.g. 73000" step="0.01" required />
+      <label for="gstRate">GST Rate (%)</label>
+      <input type="number" id="gstRate" placeholder="e.g. 3" step="0.01" required />
+      <label id="dynamicLabel" for="dynamicInput">Gold Weight (g)</label>
+      <input type="number" id="dynamicInput" placeholder="e.g. 7.250" step="0.001" required />
+      <button type="submit">Calculate</button>
+    </form>
+    <div class="result" id="result"></div>
+    <div class="result" id="liveRates">Live Rate (22kt/1g): Auto-updating from Tanishq</div>
+    <div class="source">Source: <a href="https://www.tanishq.co.in/gold-rate.html?lang=en_IN" target="_blank">Tanishq Gold Rates</a></div>
+  </div>
+  <script>
     const modeSelect = document.getElementById("mode");
     const dynamicLabel = document.getElementById("dynamicLabel");
     const dynamicInput = document.getElementById("dynamicInput");
     const form = document.getElementById("calculator-form");
     const resultDiv = document.getElementById("result");
-    const liveRatesDiv = document.getElementById("liveRates");
-    const live22ktSpan = document.getElementById("live22kt");
 
     function updateDynamicInput() {
       if (modeSelect.value === "perGram") {
@@ -135,14 +131,16 @@
 
     form.addEventListener("submit", function(e) {
       e.preventDefault();
+
       const mode = modeSelect.value;
       const totalPrice = parseFloat(document.getElementById("totalPrice").value);
       const goldRate = parseFloat(document.getElementById("goldRate").value);
       const gstRate = parseFloat(document.getElementById("gstRate").value);
       const dynamicValue = parseFloat(dynamicInput.value);
 
-      if ([totalPrice, goldRate, gstRate, dynamicValue].some(isNaN) || totalPrice <= 0 || goldRate <= 0 || gstRate < 0 || dynamicValue <= 0) {
-        resultDiv.textContent = "Please enter valid positive numbers for all fields.";
+      if (isNaN(totalPrice) || isNaN(goldRate) || isNaN(gstRate) || isNaN(dynamicValue) ||
+          totalPrice <= 0 || goldRate <= 0 || gstRate < 0 || dynamicValue <= 0) {
+        resultDiv.textContent = "Please enter valid, positive values for all fields.";
         return;
       }
 
@@ -162,25 +160,7 @@
       updateDynamicInput();
     });
 
-    async function fetchLiveGoldRate() {
-      try {
-        const response = await fetch("https://www.tanishq.co.in/gold-rate.html?lang=en_IN");
-        const text = await response.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(text, 'text/html');
-        const rateCell = doc.querySelector("table tbody tr td");
-        if (rateCell) {
-          const rateText = rateCell.textContent.trim();
-          live22ktSpan.textContent = rateText;
-        } else {
-          live22ktSpan.textContent = "Unavailable";
-        }
-      } catch (error) {
-        live22ktSpan.textContent = "Error fetching live rate";
-      }
-    }
-
     updateDynamicInput();
-    fetchLiveGoldRate();
-  </script></body>
+  </script>
+</body>
 </html>
