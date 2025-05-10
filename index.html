@@ -106,26 +106,20 @@
   <div id="liveRate24k">Fetching 24K Rate...</div>
   <div class="container">
     <form id="calculator-form">
-      <label for="metalType">Select Metal Type:</label>
-      <select id="metalType" required>
-        <option value="gold">Gold</option>
-        <option value="silver">Silver</option>
-      </select>
-
       <label for="mode">Select Calculation Mode:</label>
       <select id="mode" required>
-        <option value="perGram">I know Gold/Silver Weight, calculate Making Charge per Gram</option>
-        <option value="weight">I know Making Charge per Gram, calculate Gold/Silver Weight</option>
+        <option value="perGram">I know Gold Weight, calculate Making Charge per Gram</option>
+        <option value="weight">I know Making Charge per Gram, calculate Gold Weight</option>
         <option value="zeroCharge">0 Making Charge (Special Offer)</option>
       </select>
 
       <label for="totalPrice">Total Price Paid (₹ incl. GST)</label>
       <input type="number" id="totalPrice" placeholder="e.g. 60200" step="0.01" min="0" required />
 
-      <label for="rate">Gold/Silver Rate (₹ per 10g)</label>
-      <input type="number" id="rate" placeholder="e.g. 73000 for Gold, 700 for Silver" step="0.01" min="0" required />
+      <label for="rate">Gold Rate (₹ per 10g)</label>
+      <input type="number" id="rate" placeholder="e.g. 73000" step="0.01" min="0" required />
 
-      <label id="dynamicLabel" for="dynamicInput">Gold/Silver Weight (g)</label>
+      <label id="dynamicLabel" for="dynamicInput">Gold Weight (g)</label>
       <input type="number" id="dynamicInput" placeholder="e.g. 7.250" step="0.001" min="0" required />
 
       <p><strong>GST Rate: 3% (Fixed)</strong></p>
@@ -146,7 +140,7 @@
 
     function updateDynamicInput() {
       if (modeSelect.value === "perGram") {
-        dynamicLabel.textContent = "Gold/Silver Weight (g)";
+        dynamicLabel.textContent = "Gold Weight (g)";
         dynamicInput.placeholder = "e.g. 7.250";
         dynamicInput.disabled = false;
       } else if (modeSelect.value === "weight") {
@@ -154,7 +148,7 @@
         dynamicInput.placeholder = "e.g. 725";
         dynamicInput.disabled = false;
       } else {
-        dynamicLabel.textContent = "Gold/Silver Weight (g)";
+        dynamicLabel.textContent = "Gold Weight (g)";
         dynamicInput.value = "";
         dynamicInput.disabled = true;
         modeSelect.disabled = true;
@@ -187,10 +181,10 @@
         resultDiv.textContent = `Making Charge per Gram: ₹${result.toFixed(2)}`;
       } else if (mode === "weight") {
         result = priceBeforeGst / (ratePerGram + dynamicValue);
-        resultDiv.textContent = `Gold/Silver Weight: ${result.toFixed(3)} g`;
+        resultDiv.textContent = `Gold Weight: ${result.toFixed(3)} g`;
       } else {
         result = priceBeforeGst / ratePerGram;
-        resultDiv.textContent = `Weight with 0 Making Charge: ${result.toFixed(3)} g`;
+        resultDiv.textContent = `Gold Weight with 0 Making Charge: ${result.toFixed(3)} g`;
       }
     });
 
