@@ -106,6 +106,7 @@
       <select id="mode" required>
         <option value="calculateCharge">Calculate Making Charge</option>
         <option value="calculateWeight">Calculate Weight</option>
+        <option value="zeroCharge">0 Making Charge (Special Offer)</option>
       </select>
 
       <div class="input-group">
@@ -135,18 +136,19 @@
   <script>
     const modeSelect = document.getElementById("mode");
     const dynamicLabel = document.getElementById("dynamicLabel");
+    const dynamicInputs = document.getElementById("dynamicInputs");
     const calculateButton = document.getElementById("calculateButton");
     const form = document.getElementById("calculator-form");
     const resultDiv = document.getElementById("result");
     const calculationSteps = document.getElementById("calculationSteps");
 
     function updateDynamicInput() {
-      if (modeSelect.value === "calculateCharge") {
-        dynamicLabel.textContent = "Gold/Silver Weight (g)";
-        calculateButton.textContent = "Calculate Making Charge";
+      if (modeSelect.value === "zeroCharge") {
+        dynamicInputs.style.display = "none";
+        calculateButton.textContent = "Calculate with 0 Making Charge";
       } else {
-        dynamicLabel.textContent = "Making Charge (₹ per Gram)";
-        calculateButton.textContent = "Calculate Weight";
+        dynamicInputs.style.display = "block";
+        calculateButton.textContent = modeSelect.value === "calculateCharge" ? "Calculate Making Charge" : "Calculate Weight";
       }
       resultDiv.textContent = "";
       calculationSteps.textContent = "";
@@ -156,12 +158,11 @@
 
     form.addEventListener("submit", function(e) {
       e.preventDefault();
-
       const mode = modeSelect.value;
       const totalPrice = parseFloat(document.getElementById("totalPrice").value);
       const rate = parseFloat(document.getElementById("rate").value);
       const gstRate = 3;
-      const dynamicValue = parseFloat(document.getElementById("dynamicValue").value);
+      const dynamicValue = parseFloat(document.getElementById("dynamicValue").value) || 0;
 
       if (isNaN(totalPrice) || isNaN(rate) || totalPrice <= 0 || rate <= 0) {
         resultDiv.textContent = "Enter valid positive values only.";
@@ -172,23 +173,16 @@
       const ratePerGram = rate / 10;
       let result;
 
-      if (mode === "calculateCharge") {
-        result = (priceBeforeGst - (ratePerGram * dynamicValue)) / dynamicValue;
-        calculationSteps.innerHTML = `
-          <strong>Calculation Steps:</strong><br>
-          Price Before GST = ${totalPrice} / (1 + ${gstRate}/100) = ₹${priceBeforeGst.toFixed(2)}<br>
-          Making Charge per Gram = (Price Before GST - (Rate per Gram × Weight)) / Weight<br>
-          = (₹${priceBeforeGst.toFixed(2)} - (₹${ratePerGram.toFixed(2)} × ${dynamicValue})) / ${dynamicValue}
-        `;
-        resultDiv.textContent = `Making Charge per Gram: ₹${result.toFixed(2)}`;
-      } else {
-        result = priceBeforeGst / (ratePerGram + dynamicValue);
-        calculationSteps.innerHTML = `
-          <strong>Calculation Steps:</strong><br>
-          Price Before GST = ${totalPrice} / (1 + ${gstRate}/100) = ₹${priceBeforeGst.toFixed(2)}<br>
-          Weight = Price Before GST / (Rate per Gram + Making Charge)
-        `;
+      if (mode === "zeroCharge") {
+        result = priceBeforeGst / (ratePerGram);
         resultDiv.textContent = `Gold/Silver Weight: ${result.toFixed(3)} g`;
+        calculationSteps.innerHTML = `
+          <strong>Calculation Steps:</strong><br>
+          Price Before GST = ${totalPrice} / (1 + ${gstRate}/100) = ₹${priceBeforeGst.toFixed(2)}<br>
+          Weight = Price Before GST / Rate per Gram = ₹${priceBeforeGst.toFixed(2)} / ₹${ratePerGram.toFixed(2)}
+        `;
+      } else {
+        resultDiv.textContent = "Select a calculation mode.";
       }
     });
 
