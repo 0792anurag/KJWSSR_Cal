@@ -51,6 +51,7 @@
       font-size: 16px;
       cursor: pointer;
       margin-top: 10px;
+      width: 100%;
     }
     .result {
       font-size: 18px;
@@ -119,7 +120,7 @@
       <input type="number" id="dynamicInput" placeholder="e.g. 7.250" step="0.001" min="0" required />
 
       <p><strong>GST Rate: 3% (Fixed)</strong></p>
-      <button type="submit">Calculate</button>
+      <button type="submit" id="calculateButton">Calculate</button>
     </form>
 
     <div class="result" id="result"></div>
@@ -133,20 +134,22 @@
     const dynamicLabel = document.getElementById("dynamicLabel");
     const form = document.getElementById("calculator-form");
     const resultDiv = document.getElementById("result");
+    const calculateButton = document.getElementById("calculateButton");
 
     function updateDynamicInput() {
       if (modeSelect.value === "perGram") {
         dynamicLabel.textContent = "Gold/Silver Weight (g)";
         dynamicInput.placeholder = "e.g. 7.250";
-        dynamicInput.disabled = false;
+        calculateButton.textContent = "Calculate Making Charge per Gram";
       } else if (modeSelect.value === "weight") {
         dynamicLabel.textContent = "Making Charge per Gram (₹)";
         dynamicInput.placeholder = "e.g. 725";
-        dynamicInput.disabled = false;
+        calculateButton.textContent = "Calculate Gold/Silver Weight";
       } else {
         dynamicLabel.textContent = "Gold/Silver Weight (g)";
         dynamicInput.value = "";
         dynamicInput.disabled = true;
+        calculateButton.textContent = "Calculate Weight (0 Making Charge)";
       }
       resultDiv.textContent = "";
     }
@@ -159,7 +162,7 @@
       const mode = modeSelect.value;
       const totalPrice = parseFloat(document.getElementById("totalPrice").value);
       const rate = parseFloat(document.getElementById("rate").value);
-      const gstRate = 3; // Fixed GST
+      const gstRate = 3;
       const dynamicValue = parseFloat(document.getElementById("dynamicInput").value) || 0;
 
       if (isNaN(totalPrice) || isNaN(rate) || totalPrice <= 0 || rate <= 0) {
