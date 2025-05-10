@@ -119,12 +119,10 @@
       <label for="goldRate">Gold Rate (₹ per 10g)</label>
       <input type="number" id="goldRate" placeholder="e.g. 73000" step="0.01" min="0" required />
 
-      <label for="gstRate">GST Rate (%)</label>
-      <input type="number" id="gstRate" placeholder="e.g. 3" step="0.01" min="0" max="100" required />
-
       <label id="dynamicLabel" for="dynamicInput">Gold Weight (g)</label>
       <input type="number" id="dynamicInput" placeholder="e.g. 7.250" step="0.001" min="0" required />
 
+      <p><strong>GST Rate: 3% (Fixed)</strong></p>
       <button type="submit">Calculate</button>
     </form>
 
@@ -159,15 +157,15 @@
       const mode = modeSelect.value;
       const totalPrice = parseFloat(document.getElementById("totalPrice").value);
       const goldRate = parseFloat(document.getElementById("goldRate").value);
-      const gstRate = parseFloat(document.getElementById("gstRate").value);
       const dynamicValue = parseFloat(document.getElementById("dynamicInput").value);
 
-      if (isNaN(totalPrice) || isNaN(goldRate) || isNaN(gstRate) || isNaN(dynamicValue) ||
-          totalPrice <= 0 || goldRate <= 0 || gstRate < 0 || dynamicValue <= 0) {
+      if (isNaN(totalPrice) || isNaN(goldRate) || isNaN(dynamicValue) ||
+          totalPrice <= 0 || goldRate <= 0 || dynamicValue <= 0) {
         resultDiv.textContent = "Enter valid positive values only.";
         return;
       }
 
+      const gstRate = 3; // Fixed GST Rate
       const priceBeforeGst = totalPrice / (1 + gstRate / 100);
       const goldRatePerGram = goldRate / 10;
       let result;
