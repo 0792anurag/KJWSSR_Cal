@@ -59,6 +59,14 @@
       margin-top: 20px;
       color: #333;
     }
+    .calculation-steps {
+      font-size: 14px;
+      margin-top: 10px;
+      background: #f7f7f7;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: left;
+    }
     .social {
       margin-top: 10px;
       font-size: 14px;
@@ -70,11 +78,6 @@
     }
     .source {
       font-size: 12px;
-      margin-top: 10px;
-    }
-    #liveRate24k {
-      font-size: 20px;
-      color: green;
       margin-top: 10px;
     }
   </style>
@@ -119,6 +122,7 @@
       </div>
 
       <p><strong>GST Rate: 3% (Fixed)</strong></p>
+      <div class="calculation-steps" id="calculationSteps"></div>
       <button type="submit" id="calculateButton">Calculate</button>
     </form>
 
@@ -131,22 +135,21 @@
   <script>
     const modeSelect = document.getElementById("mode");
     const dynamicLabel = document.getElementById("dynamicLabel");
-    const dynamicInputs = document.getElementById("dynamicInputs");
     const calculateButton = document.getElementById("calculateButton");
     const form = document.getElementById("calculator-form");
     const resultDiv = document.getElementById("result");
+    const calculationSteps = document.getElementById("calculationSteps");
 
     function updateDynamicInput() {
       if (modeSelect.value === "calculateCharge") {
         dynamicLabel.textContent = "Gold/Silver Weight (g)";
-        dynamicInputs.style.display = "block";
         calculateButton.textContent = "Calculate Making Charge";
       } else {
         dynamicLabel.textContent = "Making Charge (₹ per Gram)";
-        dynamicInputs.style.display = "block";
         calculateButton.textContent = "Calculate Weight";
       }
       resultDiv.textContent = "";
+      calculationSteps.textContent = "";
     }
 
     modeSelect.addEventListener("change", updateDynamicInput);
@@ -171,9 +174,20 @@
 
       if (mode === "calculateCharge") {
         result = (priceBeforeGst - (ratePerGram * dynamicValue)) / dynamicValue;
+        calculationSteps.innerHTML = `
+          <strong>Calculation Steps:</strong><br>
+          Price Before GST = ${totalPrice} / (1 + ${gstRate}/100) = ₹${priceBeforeGst.toFixed(2)}<br>
+          Making Charge per Gram = (Price Before GST - (Rate per Gram × Weight)) / Weight<br>
+          = (₹${priceBeforeGst.toFixed(2)} - (₹${ratePerGram.toFixed(2)} × ${dynamicValue})) / ${dynamicValue}
+        `;
         resultDiv.textContent = `Making Charge per Gram: ₹${result.toFixed(2)}`;
       } else {
         result = priceBeforeGst / (ratePerGram + dynamicValue);
+        calculationSteps.innerHTML = `
+          <strong>Calculation Steps:</strong><br>
+          Price Before GST = ${totalPrice} / (1 + ${gstRate}/100) = ₹${priceBeforeGst.toFixed(2)}<br>
+          Weight = Price Before GST / (Rate per Gram + Making Charge)
+        `;
         resultDiv.textContent = `Gold/Silver Weight: ${result.toFixed(3)} g`;
       }
     });
