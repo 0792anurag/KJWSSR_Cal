@@ -72,11 +72,6 @@
       font-size: 12px;
       margin-top: 10px;
     }
-    #liveRate24k {
-      font-size: 20px;
-      color: green;
-      margin-top: 10px;
-    }
   </style>
 </head>
 <body>
@@ -103,18 +98,19 @@
       <select id="mode" required>
         <option value="calculateCharge">Calculate Making Charge</option>
         <option value="calculateWeight">Calculate Weight</option>
+        <option value="zeroMakingCharge">0 Making Charge (Special Offer)</option>
       </select>
 
-      <div class="input-group">
+      <div id="dynamicInputs">
         <label for="totalPrice">Total Price Paid (₹ incl. GST)</label>
         <input type="number" id="totalPrice" placeholder="e.g. 60200" step="0.01" min="0" required />
 
         <label for="rate">Gold/Silver Rate (₹ per 10g)</label>
         <input type="number" id="rate" placeholder="e.g. 73000" step="0.01" min="0" required />
 
-        <div id="dynamicInputs">
+        <div id="optionalInput">
           <label id="dynamicLabel">Gold/Silver Weight (g)</label>
-          <input type="number" id="dynamicValue" placeholder="e.g. 7.250" step="0.001" min="0" required />
+          <input type="number" id="dynamicValue" placeholder="e.g. 7.250" step="0.001" min="0" />
         </div>
       </div>
 
@@ -131,54 +127,43 @@
   <script>
     const modeSelect = document.getElementById("mode");
     const dynamicLabel = document.getElementById("dynamicLabel");
-    const dynamicInputs = document.getElementById("dynamicInputs");
-    const calculateButton = document.getElementById("calculateButton");
+    const dynamicInputs = document.getElementById("optionalInput");
     const form = document.getElementById("calculator-form");
     const resultDiv = document.getElementById("result");
 
     function updateDynamicInput() {
-      if (modeSelect.value === "calculateCharge") {
-        dynamicLabel.textContent = "Gold/Silver Weight (g)";
-        dynamicInputs.style.display = "block";
-        calculateButton.textContent = "Calculate Making Charge";
-      } else {
-        dynamicLabel.textContent = "Making Charge (₹ per Gram)";
-        dynamicInputs.style.display = "block";
-        calculateButton.textContent = "Calculate Weight";
-      }
-      resultDiv.textContent = "";
-    }
+      document.getElementById("totalPrice").value = "";
+      document.getElementById("rate").value = "";
+      document.getElementById("dynamicValue").value = "";
 
-    modeSelect.addEventListener("change", updateDynamicInput);
+      if (modeSelect.value === "zeroMakingCharge") {
+        dynamicInputs.style.display = "none";
+        dynamicLabel.textContent = "";
+        document.getElementById("calculateButton").textContent = "Calculate Weight (0 Making Charge)";
+      } else {
+        dynamicInputs.style.display = "block";
+        dynamicLabel.textContent = modeSelect.value === "calculateCharge" ? "Gold/Silver Weight (g)" : "Making Charge (₹ per Gram)";
+        document.getElementById("calculateButton").textContent = modeSelect.value === "calculateCharge" ? "Calculate Making Charge" : "Calculate Weight";
+      }
+    }
 
     form.addEventListener("submit", function(e) {
       e.preventDefault();
-
-      const mode = modeSelect.value;
       const totalPrice = parseFloat(document.getElementById("totalPrice").value);
       const rate = parseFloat(document.getElementById("rate").value);
       const gstRate = 3;
-      const dynamicValue = parseFloat(document.getElementById("dynamicValue").value);
-
-      if (isNaN(totalPrice) || isNaN(rate) || totalPrice <= 0 || rate <= 0) {
-        resultDiv.textContent = "Enter valid positive values only.";
-        return;
-      }
-
       const priceBeforeGst = totalPrice / (1 + gstRate / 100);
       const ratePerGram = rate / 10;
-      let result;
+      let result = "";
 
-      if (mode === "calculateCharge") {
-        result = (priceBeforeGst - (ratePerGram * dynamicValue)) / dynamicValue;
-        resultDiv.textContent = `Making Charge per Gram: ₹${result.toFixed(2)}`;
-      } else {
-        result = priceBeforeGst / (ratePerGram + dynamicValue);
-        resultDiv.textContent = `Gold/Silver Weight: ${result.toFixed(3)} g`;
+      if (modeSelect.value === "zeroMakingCharge") {
+        result = `Gold/Silver Weight: ${(priceBeforeGst / ratePerGram).toFixed(3)} g`;
       }
+      resultDiv.textContent = result;
     });
 
     updateDynamicInput();
+    modeSelect.addEventListener("change", updateDynamicInput);
   </script>
 </body>
 </html>
