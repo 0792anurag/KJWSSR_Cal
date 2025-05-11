@@ -114,7 +114,7 @@
 
         <div id="dynamicInputs">
           <label id="dynamicLabel">Gold/Silver Weight (g)</label>
-          <input type="number" id="dynamicValue" placeholder="e.g. 7.250" step="0.001" min="0" required />
+          <input type="number" id="dynamicValue" placeholder="e.g. 700" step="0.001" min="0" required />
         </div>
       </div>
 
@@ -131,7 +131,6 @@
   <script>
     const modeSelect = document.getElementById("mode");
     const dynamicLabel = document.getElementById("dynamicLabel");
-    const dynamicInputs = document.getElementById("dynamicInputs");
     const calculateButton = document.getElementById("calculateButton");
     const form = document.getElementById("calculator-form");
     const resultDiv = document.getElementById("result");
@@ -139,13 +138,16 @@
     function updateDynamicInput() {
       if (modeSelect.value === "calculateCharge") {
         dynamicLabel.textContent = "Gold/Silver Weight (g)";
-        dynamicInputs.style.display = "block";
         calculateButton.textContent = "Calculate Making Charge";
+        document.getElementById("dynamicValue").placeholder = "e.g. 7.250";
       } else {
         dynamicLabel.textContent = "Making Charge (₹ per Gram)";
-        dynamicInputs.style.display = "block";
         calculateButton.textContent = "Calculate Weight";
+        document.getElementById("dynamicValue").placeholder = "e.g. 700";
       }
+      document.getElementById("totalPrice").value = "";
+      document.getElementById("rate").value = "";
+      document.getElementById("dynamicValue").value = "";
       resultDiv.textContent = "";
     }
 
@@ -174,7 +176,7 @@
         resultDiv.textContent = `Making Charge per Gram: ₹${result.toFixed(2)}`;
       } else {
         result = priceBeforeGst / (ratePerGram + dynamicValue);
-        resultDiv.textContent = `Gold/Silver Weight: ${result.toFixed(3)} g`;
+        resultDiv.textContent = `Gold/Silver Weight: ${result.toFixed(0)} g`;
       }
     });
 
