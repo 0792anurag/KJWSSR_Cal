@@ -128,20 +128,29 @@
     const form = document.getElementById("calculator-form");
     const resultDiv = document.getElementById("result");
 
-    function updateDynamicInput() {
+    function resetInputs() {
       dynamicInput.value = "";
+      document.getElementById("totalPrice").value = "";
+      document.getElementById("goldRate").value = "";
       resultDiv.textContent = "";
+    }
 
+    function updateDynamicInput() {
+      resetInputs();
       if (modeSelect.value === "charge") {
         dynamicLabel.textContent = "Gold/Silver Weight (g)";
         dynamicInput.placeholder = "e.g. 7.250";
         dynamicInput.step = "0.001";
+        dynamicInput.disabled = false;
       } else if (modeSelect.value === "weight") {
         dynamicLabel.textContent = "Making Charge (₹ per Gram)";
         dynamicInput.placeholder = "e.g. 725";
         dynamicInput.step = "1";
+        dynamicInput.disabled = false;
       } else {
         document.getElementById("dynamicInputs").style.display = "none";
+        dynamicInput.value = "0";
+        dynamicInput.disabled = true;
       }
       document.getElementById("dynamicInputs").style.display = (modeSelect.value === "zeroCharge") ? "none" : "block";
     }
