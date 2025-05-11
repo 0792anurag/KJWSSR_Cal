@@ -97,7 +97,7 @@
 
         <div id="dynamicInputs">
           <label id="dynamicLabel">Gold/Silver Weight (g)</label>
-          <input type="number" id="dynamicValue" placeholder="e.g. 7" step="1" min="0" required />
+          <input type="number" id="dynamicValue" placeholder="e.g. 7.250" step="0.001" min="0" required />
         </div>
       </div>
 
@@ -125,18 +125,17 @@
       if (mode === "calculateCharge") {
         dynamicLabel.textContent = "Gold/Silver Weight (g)";
         calculateButton.textContent = "Calculate Making Charge";
-        document.getElementById("dynamicValue").type = "number";
-        document.getElementById("dynamicValue").placeholder = "e.g. 7";
+        document.getElementById("dynamicValue").step = "0.001";
+        document.getElementById("dynamicValue").placeholder = "e.g. 7.250";
       } else if (mode === "calculateWeight") {
         dynamicLabel.textContent = "Making Charge (₹ per Gram)";
         calculateButton.textContent = "Calculate Weight";
-        document.getElementById("dynamicValue").type = "number";
+        document.getElementById("dynamicValue").step = "1";
         document.getElementById("dynamicValue").placeholder = "e.g. 500";
       } else {
-        dynamicLabel.textContent = "";
-        calculateButton.textContent = "Calculate 0 Making Charge";
-        document.getElementById("dynamicValue").value = "";
+        dynamicLabel.style.display = "none";
         document.getElementById("dynamicValue").style.display = "none";
+        calculateButton.textContent = "Calculate 0 Making Charge";
       }
       resultDiv.textContent = "";
       calculationSteps.textContent = "";
@@ -162,10 +161,10 @@
         resultDiv.textContent = `Making Charge per Gram: ₹${result.toFixed(2)}`;
       } else if (mode === "calculateWeight") {
         result = priceBeforeGst / (ratePerGram + dynamicValue);
-        resultDiv.textContent = `Gold/Silver Weight: ${result.toFixed(0)} g`;
+        resultDiv.textContent = `Gold/Silver Weight: ${result.toFixed(3)} g`;
       } else {
-        result = priceBeforeGst / (rate / 10);
-        resultDiv.textContent = `Gold/Silver Weight with 0 Making Charge: ${result.toFixed(0)} g`;
+        result = priceBeforeGst / ratePerGram;
+        resultDiv.textContent = `Gold/Silver Weight: ${result.toFixed(3)} g (0 Making Charge)`;
       }
     });
 
