@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Krishna Jewellery Calculator</title>
+  <title>Krishna Jewellery Work Shop Calculator</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
   <style>
     body {
@@ -14,24 +14,17 @@
       text-align: center;
       color: #222;
     }
-    img {
-      width: 250px;
-      margin-top: 20px;
-      border-radius: 12px;
-    }
-    h1 {
-      color: #b58900;
-    }
+    img { width: 250px; margin-top: 20px; border-radius: 12px; }
+    h1 { color: #b58900; }
     .container {
       background: #fff3e0;
       margin: 30px auto;
       padding: 20px;
       border-radius: 16px;
-      width: 90%;
-      max-width: 500px;
+      width: 90%; max-width: 500px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
-    label, select, input {
+    label, select, input, button {
       display: block;
       width: 100%;
       margin: 12px 0;
@@ -50,8 +43,6 @@
       color: white;
       font-size: 16px;
       cursor: pointer;
-      margin-top: 10px;
-      width: 100%;
     }
     .result {
       font-size: 18px;
@@ -61,61 +52,60 @@
       text-align: left;
       line-height: 1.6;
     }
-    .social {
-      margin-top: 10px;
-      font-size: 14px;
-    }
-    .social img {
-      width: 24px;
-      vertical-align: middle;
-      margin: 0 5px;
-    }
-    .source {
-      font-size: 12px;
-      margin-top: 10px;
-    }
+    .social { margin-top: 10px; font-size: 14px; }
+    .social img { width: 24px; vertical-align: middle; margin: 0 5px; }
+    .source { font-size: 12px; margin-top: 10px; }
   </style>
 </head>
 <body>
 
-  <img src="logo.jpg" alt="Krishna Jewellery Workshop" />
+  <img src="logo.jpg" alt="Krishna Jewellery Work Shop" />
   <h1>Krishna Jewellery Workshop</h1>
 
   <div class="social">
-    <a href="https://www.facebook.com/raytarun362" target="_blank">
-      <img src="facebook-new.png" alt="Facebook">
-    </a>
-    <a href="https://www.instagram.com/krishna_jewellery_workshop_kdp" target="_blank">
-      <img src="instagram-new.png" alt="Instagram">
-    </a>
-    <a href="https://g.co/kgs/HRLo7DF" target="_blank">
-      <img src="google-logo.png" alt="Google">
-    </a>
+    <a href="https://www.facebook.com/raytarun362" target="_blank"><img src="facebook-new.png" alt="Facebook"></a>
+    <a href="https://www.instagram.com/krishna_jewellery_workshop_kdp" target="_blank"><img src="instagram-new.png" alt="Instagram"></a>
+    <a href="https://g.co/kgs/HRLo7DF" target="_blank"><img src="google-logo.png" alt="Google"></a>
   </div>
 
   <div id="liveRate24k">Fetching 24K Rate...</div>
   <div class="container">
     <form id="calculator-form">
       <label for="mode">Select Calculation Mode:</label>
-      <select id="mode" required>
+      <select id="mode" onchange="updateFields()">
         <option value="calculateCharge">Calculate Making Charge</option>
         <option value="calculateWeight">Calculate Weight</option>
         <option value="zeroMakingCharge">0 Making Charge (Special Offer)</option>
+        <option value="priceCalculator">Price Calculator</option>
       </select>
 
-      <label for="totalPrice">Total Price Paid (₹ incl. GST)</label>
-      <input type="number" id="totalPrice" placeholder="e.g. 60200" step="0.01" min="0" required />
+      <div id="field-totalPrice">
+        <label for="totalPrice">Total Price Paid (₹ incl. GST)</label>
+        <input type="number" id="totalPrice" placeholder="e.g. 60200" step="0.01" min="0">
+      </div>
 
-      <label for="rate">Gold/Silver Rate (₹ per 10g)</label>
-      <input type="number" id="rate" placeholder="e.g. 73000" step="0.01" min="0" required />
+      <div id="field-quantity">
+        <label for="quantity">Enter Quantity (g)</label>
+        <input type="number" id="quantity" placeholder="e.g. 10" step="0.01" min="0">
+      </div>
 
-      <div id="optionalInput">
-        <label id="dynamicLabel" for="dynamicValue">Gold/Silver Weight (g)</label>
-        <input type="number" id="dynamicValue" placeholder="e.g. 7.250" step="0.001" min="0" />
+      <div id="field-rate">
+        <label for="rate">Gold/Silver Rate (₹ per 10g)</label>
+        <input type="number" id="rate" placeholder="e.g. 73000" step="0.01" min="0">
+      </div>
+
+      <div id="field-weight">
+        <label for="weight">Gold/Silver Weight (g)</label>
+        <input type="number" id="weight" placeholder="e.g. 7.250" step="0.001" min="0">
+      </div>
+
+      <div id="field-makingCharge">
+        <label for="makingCharge">Making Charge (₹ per Gram)</label>
+        <input type="number" id="makingCharge" placeholder="e.g. 50" step="0.01" min="0">
       </div>
 
       <p><strong>GST Rate: 3% (Fixed)</strong></p>
-      <button type="submit" id="calculateButton">Calculate</button>
+      <button type="button" onclick="calculate()" id="calculateButton">Calculate</button>
     </form>
 
     <div class="result" id="result"></div>
@@ -125,85 +115,90 @@
   </div>
 
   <script>
-    const modeSelect    = document.getElementById("mode");
-    const totalInput    = document.getElementById("totalPrice");
-    const rateInput     = document.getElementById("rate");
-    const optionalGroup = document.getElementById("optionalInput");
-    const dynamicLabel  = document.getElementById("dynamicLabel");
-    const dynamicValue  = document.getElementById("dynamicValue");
-    const calculateBtn  = document.getElementById("calculateButton");
-    const form          = document.getElementById("calculator-form");
-    const resultDiv     = document.getElementById("result");
-
-    function resetFields() {
-      totalInput.value = "";
-      rateInput.value  = "";
-      dynamicValue.value = "";
-      resultDiv.textContent = "";
-    }
-
-    function updateMode() {
-      resetFields();
-      const mode = modeSelect.value;
-      if (mode === "zeroMakingCharge") {
-        optionalGroup.style.display = "none";
-        calculateBtn.textContent = "Calculate Weight (0 Making Charge)";
-      } else {
-        optionalGroup.style.display = "block";
-        if (mode === "calculateCharge") {
-          dynamicLabel.textContent = "Gold/Silver Weight (g)";
-          dynamicValue.placeholder = "e.g. 7.250";
-          calculateBtn.textContent = "Calculate Making Charge";
-        } else {
-          dynamicLabel.textContent = "Making Charge (₹ per Gram)";
-          dynamicValue.placeholder = "e.g. 725";
-          calculateBtn.textContent = "Calculate Weight";
-        }
+    function updateFields() {
+      const mode = document.getElementById('mode').value;
+      // clear all inputs & result
+      ['totalPrice','quantity','rate','weight','makingCharge'].forEach(id=>document.getElementById(id).value='');
+      document.getElementById('result').textContent='';
+      // hide all
+      ['field-totalPrice','field-quantity','field-rate','field-weight','field-makingCharge'].forEach(fid=>document.getElementById(fid).style.display='none');
+      // show relevant
+      if(mode==='calculateCharge'){
+        document.getElementById('field-totalPrice').style.display='block';
+        document.getElementById('field-rate').style.display='block';
+        document.getElementById('field-weight').style.display='block';
+        document.getElementById('calculateButton').textContent='Calculate Making Charge';
+      } else if(mode==='calculateWeight'){
+        document.getElementById('field-totalPrice').style.display='block';
+        document.getElementById('field-rate').style.display='block';
+        document.getElementById('field-makingCharge').style.display='block';
+        document.getElementById('calculateButton').textContent='Calculate Weight';
+      } else if(mode==='zeroMakingCharge'){
+        document.getElementById('field-totalPrice').style.display='block';
+        document.getElementById('field-rate').style.display='block';
+        document.getElementById('calculateButton').textContent='Calculate Weight (0 Making Charge)';
+      } else /* priceCalculator */{
+        document.getElementById('field-quantity').style.display='block';
+        document.getElementById('field-rate').style.display='block';
+        document.getElementById('field-makingCharge').style.display='block';
+        document.getElementById('calculateButton').textContent='Calculate Price';
       }
     }
 
-    form.addEventListener("submit", e => {
-      e.preventDefault();
-      const mode = modeSelect.value;
-      const total = parseFloat(totalInput.value);
-      const rate10 = parseFloat(rateInput.value);
-      const gstRate = 3;
-      if (isNaN(total) || isNaN(rate10) || total <= 0 || rate10 <= 0) {
-        resultDiv.textContent = "Enter valid positive values for price and rate.";
-        return;
-      }
-      const priceBeforeGst = total / (1 + gstRate/100);
-      const rateGram = rate10 / 10;
-      let output = "";
-
-      if (mode === "calculateCharge") {
-        const weight = parseFloat(dynamicValue.value);
-        if (isNaN(weight) || weight <= 0) {
-          resultDiv.textContent = "Enter valid weight.";
-          return;
+    function calculate() {
+      const mode = document.getElementById('mode').value;
+      const gst=0.03;
+      let totalPrice, quantity, rate, weight, makingCharge;
+      let out='';
+      if(mode==='calculateCharge'){
+        totalPrice=parseFloat(document.getElementById('totalPrice').value);
+        rate=parseFloat(document.getElementById('rate').value)/10;
+        weight=parseFloat(document.getElementById('weight').value);
+        if(!totalPrice||!rate||!weight){ out='Enter valid inputs.'; }
+        else{
+          const net=totalPrice/(1+gst);
+          const mc=(net - rate*weight)/weight;
+          out=`Making Charge per Gram: ₹${mc.toFixed(2)}`;
         }
-        const charge = (priceBeforeGst - (rateGram * weight)) / weight;
-        output = `Making Charge per Gram: ₹${charge.toFixed(2)}`;
-      }
-      else if (mode === "calculateWeight") {
-        const charge = parseFloat(dynamicValue.value);
-        if (isNaN(charge) || charge < 0) {
-          resultDiv.textContent = "Enter valid making charge.";
-          return;
+      } else if(mode==='calculateWeight'){
+        totalPrice=parseFloat(document.getElementById('totalPrice').value);
+        rate=parseFloat(document.getElementById('rate').value)/10;
+        makingCharge=parseFloat(document.getElementById('makingCharge').value);
+        if(!totalPrice||!rate||makingCharge<0){ out='Enter valid inputs.'; }
+        else{
+          const net=totalPrice/(1+gst);
+          const w=net/(rate+makingCharge);
+          out=`Gold/Silver Weight: ${w.toFixed(3)} g`;
         }
-        const weight = priceBeforeGst / (rateGram + charge);
-        output = `Gold/Silver Weight: ${weight.toFixed(3)} g`;
+      } else if(mode==='zeroMakingCharge'){
+        totalPrice=parseFloat(document.getElementById('totalPrice').value);
+        rate=parseFloat(document.getElementById('rate').value)/10;
+        if(!totalPrice||!rate){ out='Enter valid inputs.'; }
+        else{
+          const net=totalPrice/(1+gst);
+          const w=net/rate;
+          out=`Gold/Silver Weight: ${w.toFixed(3)} g`; }
+      } else /* priceCalculator */{
+        quantity=parseFloat(document.getElementById('quantity').value);
+        rate=parseFloat(document.getElementById('rate').value)/10;
+        makingCharge=parseFloat(document.getElementById('makingCharge').value)||0;
+        if(!quantity||!rate){ out='Enter valid inputs.'; }
+        else{
+          const base=quantity*rate;
+          const mcTotal=makingCharge*quantity;
+          const gstAmt=(base+mcTotal)*gst;
+          const total=base+mcTotal+gstAmt;
+          out=`<strong>Total Price (incl. GST): ₹${total.toFixed(2)}</strong><br>
+               Base Price: ₹${base.toFixed(2)}<br>
+               Making Charge: ₹${mcTotal.toFixed(2)}<br>
+               GST (3%): ₹${gstAmt.toFixed(2)}`;
+        }
       }
-      else { // zeroMakingCharge
-        const weight = priceBeforeGst / rateGram;
-        output = `Gold/Silver Weight: ${weight.toFixed(3)} g`;
-      }
+      document.getElementById('result').innerHTML=out;
+    }
 
-      resultDiv.textContent = output;
-    });
-
-    modeSelect.addEventListener("change", updateMode);
-    updateMode();
+    // init
+    updateFields();
   </script>
 </body>
 </html>
