@@ -120,32 +120,36 @@
     const resultDiv = document.getElementById("result");
     const calculationSteps = document.getElementById("calculationSteps");
 
+    function resetInputs() {
+      document.getElementById("totalPrice").value = "";
+      document.getElementById("rate").value = "";
+      document.getElementById("dynamicValue").value = "";
+      resultDiv.textContent = "";
+      calculationSteps.textContent = "";
+    }
+
     function updateDynamicInput() {
+      resetInputs();
       const mode = modeSelect.value;
       if (mode === "calculateCharge") {
         dynamicLabel.textContent = "Gold/Silver Weight (g)";
         calculateButton.textContent = "Calculate Making Charge";
         document.getElementById("dynamicValue").step = "0.001";
-        document.getElementById("dynamicValue").placeholder = "e.g. 7.250";
       } else if (mode === "calculateWeight") {
         dynamicLabel.textContent = "Making Charge (₹ per Gram)";
         calculateButton.textContent = "Calculate Weight";
         document.getElementById("dynamicValue").step = "1";
-        document.getElementById("dynamicValue").placeholder = "e.g. 500";
       } else {
         dynamicLabel.style.display = "none";
         document.getElementById("dynamicValue").style.display = "none";
         calculateButton.textContent = "Calculate 0 Making Charge";
       }
-      resultDiv.textContent = "";
-      calculationSteps.textContent = "";
     }
 
     modeSelect.addEventListener("change", updateDynamicInput);
 
     form.addEventListener("submit", function(e) {
       e.preventDefault();
-
       const mode = modeSelect.value;
       const totalPrice = parseFloat(document.getElementById("totalPrice").value);
       const rate = parseFloat(document.getElementById("rate").value);
