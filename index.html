@@ -67,6 +67,15 @@
       border-radius: 8px;
       text-align: left;
     }
+    .social {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    .social img {
+      width: 24px;
+      vertical-align: middle;
+      margin: 0 5px;
+    }
     .source {
       font-size: 12px;
       margin-top: 10px;
@@ -77,6 +86,18 @@
 
   <img src="logo.jpg" alt="Krishna Jewellery Workshop" />
   <h1>Krishna Jewellery Workshop</h1>
+
+  <div class="social">
+    <a href="https://www.facebook.com/raytarun362" target="_blank">
+      <img src="facebook-new.png" alt="Facebook">
+    </a>
+    <a href="https://www.instagram.com/krishna_jewellery_workshop_kdp" target="_blank">
+      <img src="instagram-new.png" alt="Instagram">
+    </a>
+    <a href="https://g.co/kgs/HRLo7DF" target="_blank">
+      <img src="google-logo.png" alt="Google">
+    </a>
+  </div>
 
   <div id="liveRate24k">Fetching 24K Rate...</div>
   <div class="container">
@@ -163,12 +184,9 @@
       if (mode === "calculateCharge") {
         result = (priceBeforeGst - (ratePerGram * dynamicValue)) / dynamicValue;
         resultDiv.textContent = `Making Charge per Gram: ₹${result.toFixed(2)}`;
-      } else if (mode === "calculateWeight") {
+      } else {
         result = priceBeforeGst / (ratePerGram + dynamicValue);
         resultDiv.textContent = `Gold/Silver Weight: ${result.toFixed(3)} g`;
-      } else {
-        result = priceBeforeGst / ratePerGram;
-        resultDiv.textContent = `Gold/Silver Weight: ${result.toFixed(3)} g (0 Making Charge)`;
       }
     });
 
